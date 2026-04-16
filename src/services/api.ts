@@ -3,7 +3,7 @@ import { ApiResponse, ProcessedCampaignData } from '../types/campaign';
 import { parse } from 'date-fns';
 
 const CAMPAIGN_API_URLS = [
-  '/api-proxy/google/sheets/1bOT3vNItNiBPZzUVhVPaxdn3ICvk49TpNAuawsjL43M/data?range=Consolidado'
+  'https://nmbcoamazonia-api.vercel.app/google/sheets/1bOT3vNItNiBPZzUVhVPaxdn3ICvk49TpNAuawsjL43M/data?range=Consolidado'
 ];
 
 const parseNumber = (value: string): number => {
