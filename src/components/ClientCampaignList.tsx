@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react';
 import { ProcessedCampaignData } from '../types/campaign';
+import { toSlug } from '../utils/slug';
 
 interface ClientCampaignListProps {
   data: ProcessedCampaignData[];
@@ -14,6 +15,7 @@ const formatNumber = (n: number) => new Intl.NumberFormat('pt-BR').format(n);
 
 const ClientCampaignList = ({ data, selectedPI, onSelectPI }: ClientCampaignListProps) => {
   const [expandedCampaigns, setExpandedCampaigns] = useState<Set<string>>(new Set());
+  const clientSlug = useMemo(() => toSlug(data[0]?.cliente || ''), [data]);
 
   const campaigns = useMemo(() => {
     const map = new Map<string, { pis: Map<string, ProcessedCampaignData[]> }>();
@@ -96,6 +98,19 @@ const ClientCampaignList = ({ data, selectedPI, onSelectPI }: ClientCampaignList
                 <span className={`text-sm font-medium truncate ${camp.isActive ? 'text-green-600' : 'text-gray-800'}`}>
                   {camp.nome}
                 </span>
+                <a
+                  href={`/${clientSlug}/${toSlug(camp.nome)}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={e => e.stopPropagation()}
+                  title={`Ver dashboard de ${camp.nome}`}
+                  className="flex items-center justify-center w-6 h-6 rounded-lg bg-gray-100 hover:bg-[#153ece] text-gray-400 hover:text-white transition-colors shrink-0"
+                >
+                  <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.477 0 8.268 2.943 9.542 7-1.274 4.057-5.065 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                  </svg>
+                </a>
               </div>
               <div className="flex items-center gap-4 shrink-0 ml-4">
                 <div className="text-right hidden sm:block">
@@ -141,6 +156,19 @@ const ClientCampaignList = ({ data, selectedPI, onSelectPI }: ClientCampaignList
                           <span className="text-xs text-gray-500 truncate">
                             {pi.veiculos.join(' · ')}
                           </span>
+                          <a
+                            href={`/${clientSlug}/${toSlug(camp.nome)}/${pi.pi}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            onClick={e => e.stopPropagation()}
+                            title={`Ver dashboard do PI ${pi.pi}`}
+                            className="flex items-center justify-center w-6 h-6 rounded-lg bg-gray-100 hover:bg-[#153ece] text-gray-400 hover:text-white transition-colors shrink-0"
+                          >
+                            <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.477 0 8.268 2.943 9.542 7-1.274 4.057-5.065 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                            </svg>
+                          </a>
                         </div>
                       </div>
                       <div className="flex items-center gap-4 shrink-0 ml-4">

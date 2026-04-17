@@ -103,8 +103,8 @@ const ImpressionsChart = ({
 
   const chartData = useMemo(() => {
     const currentPeriodData = periodFilter === '7days'
-      ? data.filter(item => item.date >= sevenDaysAgo && item.date <= yesterday)
-      : data.filter(item => item.date <= yesterday);
+      ? data.filter(item => item.date >= sevenDaysAgo)
+      : data;
 
     const currentData = processDataForPeriod(currentPeriodData);
 
