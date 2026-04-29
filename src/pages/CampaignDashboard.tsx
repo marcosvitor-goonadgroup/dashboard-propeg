@@ -7,6 +7,7 @@ import ComparisonToggle from '../components/ComparisonToggle';
 import PIInfoCard from '../components/PIInfoCard';
 import ClientCampaignList from '../components/ClientCampaignList';
 import CreativePerformance from '../components/CreativePerformance';
+import Filters from '../components/Filters';
 import ParticlesBackground from '../components/ParticlesBackground';
 import Footer from '../components/Footer';
 import adDeskWhite from '../images/ad-desk-white.svg';
@@ -22,10 +23,16 @@ const CampaignHeader = ({
   clientName,
   campaignName,
   agencia,
+  onOpenFilters,
+  onClearFilters,
+  activeFiltersCount,
 }: {
   clientName: string;
   campaignName: string;
   agencia: string;
+  onOpenFilters: () => void;
+  onClearFilters: () => void;
+  activeFiltersCount: number;
 }) => (
   <header className="w-full bg-[#153ece] rounded-[34px] px-8 py-6 mb-6">
     <div className="flex items-center justify-between gap-4">
@@ -46,6 +53,33 @@ const CampaignHeader = ({
           )}
         </div>
       </div>
+      <div className="flex items-center gap-3 shrink-0">
+        {activeFiltersCount > 0 && (
+          <button
+            onClick={onClearFilters}
+            className="flex items-center justify-center w-10 h-10 bg-white/20 hover:bg-white/30 text-white rounded-2xl transition-colors"
+            title="Limpar filtros"
+          >
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        )}
+        <button
+          onClick={onOpenFilters}
+          className="relative flex items-center gap-2 px-5 py-2.5 bg-white/20 hover:bg-white/30 text-white rounded-2xl transition-colors font-medium text-sm whitespace-nowrap"
+        >
+          <svg className="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
+          </svg>
+          <span className="hidden sm:inline">Filtros</span>
+          {activeFiltersCount > 0 && (
+            <span className="absolute -top-2 -right-2 bg-white text-[#153ece] text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center">
+              {activeFiltersCount}
+            </span>
+          )}
+        </button>
+      </div>
     </div>
   </header>
 );
@@ -54,8 +88,9 @@ const CampaignDashboardContent = ({
   clientSlug,
   campaignSlug,
 }: CampaignDashboardProps) => {
-  const { loading, error, filteredData, data, agencia } = useCampaign();
+  const { loading, error, filteredData, filters, setFilters, data, agencia } = useCampaign();
 
+  const [isFiltersOpen, setIsFiltersOpen] = useState(false);
   const [periodFilter, setPeriodFilter] = useState<'7days' | 'all'>('7days');
   const [comparisonMode, setComparisonMode] = useState<'benchmark' | 'previous'>('benchmark');
   const [selectedPI, setSelectedPI] = useState<string | null>(null);
@@ -192,6 +227,32 @@ const CampaignDashboardContent = ({
     };
   }, [displayData]);
 
+  const activeFiltersCount = useMemo(() => {
+    let count = 0;
+    if (filters.dateRange.start || filters.dateRange.end) count++;
+    if (filters.veiculo.length > 0) count += filters.veiculo.length;
+    if (filters.tipoDeCompra.length > 0) count += filters.tipoDeCompra.length;
+    if (filters.campanha.length > 0) count += filters.campanha.length;
+    if (filters.numeroPi) count++;
+    if (filters.localizacao.length > 0) count += filters.localizacao.length;
+    if (selectedVehicle) count++;
+    if (selectedPI) count++;
+    return count;
+  }, [filters, selectedVehicle, selectedPI]);
+
+  const handleClearFilters = () => {
+    setSelectedPI(null);
+    setSelectedVehicle(null);
+    setFilters({
+      dateRange: { start: null, end: null },
+      veiculo: [],
+      tipoDeCompra: [],
+      campanha: [],
+      numeroPi: null,
+      localizacao: []
+    });
+  };
+
   // Limpa PI selecionado ao trocar período
   useEffect(() => {
     setSelectedPI(null);
@@ -224,7 +285,11 @@ const CampaignDashboardContent = ({
           clientName={clientName}
           campaignName={campaignName}
           agencia={agencia}
+          onOpenFilters={() => setIsFiltersOpen(true)}
+          onClearFilters={handleClearFilters}
+          activeFiltersCount={activeFiltersCount}
         />
+        <Filters isOpen={isFiltersOpen} onClose={() => setIsFiltersOpen(false)} />
 
         <main>
           <div className="space-y-6">
@@ -274,7 +339,7 @@ const CampaignDashboardContent = ({
 
               <BigNumbers
                 metrics={displayMetrics}
-                filters={{ dateRange: { start: null, end: null }, veiculo: [], tipoDeCompra: [], campanha: [], numeroPi: null }}
+                filters={{ dateRange: { start: null, end: null }, veiculo: [], tipoDeCompra: [], campanha: [], numeroPi: null, localizacao: [] }}
                 periodFilter={periodFilter}
                 generalBenchmarks={generalBenchmarks}
                 comparisonMode={comparisonMode}

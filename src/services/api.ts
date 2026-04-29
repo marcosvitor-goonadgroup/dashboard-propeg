@@ -47,7 +47,7 @@ const normalizeVeiculo = (veiculo: string): string => {
 // [11] Cost (Spend), [12] Impressions, [13] Clicks, [14] Video View, [15] Views 25%,
 // [16] Views 50%, [17] Views 75%, [18] Views 100%, [19] VA (engajamento),
 // [20] Agência, [21] Veículo, [22] Número PI, [23] Tipo de Compra, [24] Investimento,
-// [25] Formato, [26] Campanha, [27] Cliente
+// [25] Formato, [26] Campanha, [27] Localização, [28] Cliente
 export const fetchCampaignData = async (): Promise<ProcessedCampaignData[]> => {
   try {
     const responses = await Promise.all(
@@ -65,7 +65,8 @@ export const fetchCampaignData = async (): Promise<ProcessedCampaignData[]> => {
             const numeroPi = row[22] || '';
             const veiculoRaw = row[21] || '';
             const veiculo = normalizeVeiculo(veiculoRaw);
-            const cliente = row[27] || '';
+            const localizacao = row[27] || '';
+            const cliente = row[28] || '';
             const agencia = row[20] || '';
 
             if (numeroPi === '#VALUE!') {
@@ -93,6 +94,7 @@ export const fetchCampaignData = async (): Promise<ProcessedCampaignData[]> => {
               image: '',
               campanha: row[26] || '',
               numeroPi: numeroPi,
+              localizacao: localizacao,
               cliente: cliente,
               agencia: agencia
             };

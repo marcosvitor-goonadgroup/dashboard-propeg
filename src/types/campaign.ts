@@ -50,6 +50,7 @@ export interface ProcessedCampaignData {
   image: string; // URL da imagem do criativo
   campanha: string;
   numeroPi: string;
+  localizacao: string;
   cliente: string;
   agencia: string;
   realInvestment?: number; // Investimento calculado pela tabela de preços
@@ -87,6 +88,7 @@ export interface Filters {
   tipoDeCompra: string[];
   campanha: string[];
   numeroPi: string | null;
+  localizacao: string[];
 }
 
 export interface GoogleSearchDataRow {

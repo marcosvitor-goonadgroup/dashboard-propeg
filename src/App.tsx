@@ -245,7 +245,8 @@ const DashboardContent = () => {
       veiculo: [],
       tipoDeCompra: [],
       campanha: [],
-      numeroPi: null
+      numeroPi: null,
+      localizacao: []
     });
   };
 

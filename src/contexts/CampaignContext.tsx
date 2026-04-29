@@ -19,6 +19,7 @@ interface CampaignContextType {
     campanhas: string[];
     numerosPi: string[];
     clientes: string[];
+    localizacoes: string[];
   };
 }
 
@@ -46,7 +47,8 @@ export const CampaignProvider = ({ children }: CampaignProviderProps) => {
     veiculo: [],
     tipoDeCompra: [],
     campanha: [],
-    numeroPi: null
+    numeroPi: null,
+    localizacao: []
   });
 
   useEffect(() => {
@@ -102,6 +104,9 @@ export const CampaignProvider = ({ children }: CampaignProviderProps) => {
     }
     if (filters.tipoDeCompra.length > 0) {
       filtered = filtered.filter(d => filters.tipoDeCompra.includes(d.tipoDeCompra));
+    }
+    if (filters.localizacao.length > 0) {
+      filtered = filtered.filter(d => filters.localizacao.includes(d.localizacao));
     }
 
     setFilteredData(filtered);
@@ -170,7 +175,8 @@ export const CampaignProvider = ({ children }: CampaignProviderProps) => {
     tiposDeCompra: Array.from(new Set(data.map(d => d.tipoDeCompra).filter(Boolean))),
     campanhas: Array.from(new Set(data.map(d => d.campanha).filter(Boolean))),
     numerosPi: Array.from(new Set(data.map(d => d.numeroPi).filter(Boolean))),
-    clientes: Array.from(new Set(data.map(d => d.cliente).filter(Boolean)))
+    clientes: Array.from(new Set(data.map(d => d.cliente).filter(Boolean))),
+    localizacoes: Array.from(new Set(data.map(d => d.localizacao).filter(Boolean)))
   };
 
   // Pega o nome da agência do primeiro registro com agência definida

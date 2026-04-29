@@ -89,7 +89,8 @@ const ClientDashboardContent = ({ clientName }: { clientName: string }) => {
       veiculo: [],
       tipoDeCompra: [],
       campanha: [],
-      numeroPi: null
+      numeroPi: null,
+      localizacao: []
     });
   }, []);
 
@@ -225,7 +226,8 @@ const ClientDashboardContent = ({ clientName }: { clientName: string }) => {
       veiculo: [],
       tipoDeCompra: [],
       campanha: [],
-      numeroPi: null
+      numeroPi: null,
+      localizacao: []
     });
   };
 
