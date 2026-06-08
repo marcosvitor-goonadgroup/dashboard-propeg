@@ -2,25 +2,7 @@ import { CampaignSummary, ProcessedCampaignData, Filters, CampaignMetrics } from
 import { useMemo, useState } from 'react';
 import { subDays } from 'date-fns';
 import { toSlug } from '../utils/slug';
-import logoSecom from '../images/logo_secom.png';
-import logoMoovit from '../images/Moovit_Logo.png';
-import logoCittamobi from '../images/logo_cittamobi.png';
-import logoBibliaOn from '../images/logo_biblia_on.svg';
-import logoDeezer from '../images/deezer_logo.png';
-
-const clientLogos: Record<string, string> = {
-  'Secom': logoSecom,
-  'SECOM': logoSecom,
-  'Moovit': logoMoovit,
-  'MOOVIT': logoMoovit,
-  'Cittamobi': logoCittamobi,
-  'CITTAMOBI': logoCittamobi,
-  'Biblia On': logoBibliaOn,
-  'BIBLIA ON': logoBibliaOn,
-  'Bíblia On': logoBibliaOn,
-  'Deezer': logoDeezer,
-  'DEEZER': logoDeezer
-};
+import { getClientLogo } from '../config/clientLogos';
 
 interface CampaignListProps {
   campaigns: CampaignSummary[];
@@ -318,9 +300,9 @@ const CampaignList = ({
                   <div className="flex items-center justify-between">
                     <div className="flex items-center space-x-3">
                       {/* Logo do cliente ou ícone padrão */}
-                      {clientLogos[client.nome] ? (
+                      {getClientLogo(client.nome) ? (
                         <img
-                          src={clientLogos[client.nome]}
+                          src={getClientLogo(client.nome)}
                           alt={client.nome}
                           className="h-8 w-28 object-contain object-left"
                         />

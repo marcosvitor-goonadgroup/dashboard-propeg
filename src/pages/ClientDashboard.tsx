@@ -14,31 +14,39 @@ import Filters from '../components/Filters';
 import Footer from '../components/Footer';
 import ClientCampaignList from '../components/ClientCampaignList';
 import adDeskWhite from '../images/ad-desk-white.svg';
+import { getClientLogo } from '../config/clientLogos';
+import { toSlug } from '../utils/slug';
 import { subDays, startOfDay, format } from 'date-fns';
-
-const slugToClientName = (slug: string): string => slug.toUpperCase();
 
 interface ClientHeaderProps {
   clientName: string;
+  clientLogo?: string;
   agencia: string;
   onOpenFilters: () => void;
   onClearFilters: () => void;
   activeFiltersCount: number;
 }
 
-const ClientHeader = ({ clientName, agencia, onOpenFilters, onClearFilters, activeFiltersCount }: ClientHeaderProps) => (
+const ClientHeader = ({ clientName, clientLogo, agencia, onOpenFilters, onClearFilters, activeFiltersCount }: ClientHeaderProps) => (
   <header className="w-full bg-[#153ece] rounded-[34px] px-8 py-6 mb-6">
     <div className="flex items-center justify-between gap-4">
       <div className="flex items-center gap-6 min-w-0">
         <img src={adDeskWhite} alt="AD Desk" className="h-14 w-auto shrink-0" />
-        <div className="border-l border-white/30 pl-6 min-w-0">
-          <h1 className="text-white font-bold text-xl sm:text-2xl leading-tight whitespace-nowrap">
-            {clientName}
-          </h1>
-          <p className="text-white/60 text-sm sm:text-base whitespace-nowrap mt-0.5">
-            Painel de Campanhas
-            {agencia && <span className="text-white/80"> | {agencia}</span>}
-          </p>
+        <div className="border-l border-white/30 pl-6 min-w-0 flex items-center gap-4">
+          {clientLogo && (
+            <div className="bg-white rounded-2xl px-4 py-2 shrink-0 flex items-center">
+              <img src={clientLogo} alt={clientName} className="h-9 w-auto max-w-[180px] object-contain" />
+            </div>
+          )}
+          <div className="min-w-0">
+            <h1 className="text-white font-bold text-xl sm:text-2xl leading-tight whitespace-nowrap">
+              {clientName}
+            </h1>
+            <p className="text-white/60 text-sm sm:text-base whitespace-nowrap mt-0.5">
+              Painel de Campanhas
+              {agencia && <span className="text-white/80"> | {agencia}</span>}
+            </p>
+          </div>
         </div>
       </div>
 
@@ -73,8 +81,15 @@ const ClientHeader = ({ clientName, agencia, onOpenFilters, onClearFilters, acti
   </header>
 );
 
-const ClientDashboardContent = ({ clientName }: { clientName: string }) => {
+const ClientDashboardContent = ({ slug }: { slug: string }) => {
   const { loading, error, filteredData, filters, setFilters, data, agencia } = useCampaign();
+
+  // Nome real do cliente a partir dos dados (casa por slug, ignorando acento/caixa)
+  const clientName = useMemo(
+    () => data.find(d => toSlug(d.cliente || '') === slug)?.cliente || slug.toUpperCase(),
+    [data, slug]
+  );
+  const clientLogo = getClientLogo(clientName);
 
   const [isFiltersOpen, setIsFiltersOpen] = useState(false);
   const [periodFilter, setPeriodFilter] = useState<'7days' | 'all'>('7days');
@@ -96,8 +111,8 @@ const ClientDashboardContent = ({ clientName }: { clientName: string }) => {
 
   // Todos os dados do cliente (sem filtro de período)
   const clientData = useMemo(
-    () => filteredData.filter(d => d.cliente?.toUpperCase() === clientName.toUpperCase()),
-    [filteredData, clientName]
+    () => filteredData.filter(d => toSlug(d.cliente || '') === slug),
+    [filteredData, slug]
   );
 
   // Data máxima normalizada para início do dia
@@ -256,6 +271,7 @@ const ClientDashboardContent = ({ clientName }: { clientName: string }) => {
       <div className="relative z-10 max-w-[1440px] mx-auto px-3 sm:px-6 pt-3 sm:pt-6 pb-3 sm:pb-6">
         <ClientHeader
           clientName={clientName}
+          clientLogo={clientLogo}
           agencia={agencia}
           onOpenFilters={() => setIsFiltersOpen(true)}
           onClearFilters={handleClearFilters}
@@ -386,7 +402,7 @@ const ClientDashboardContent = ({ clientName }: { clientName: string }) => {
 
 const ClientDashboard = ({ slug }: { slug: string }) => (
   <CampaignProvider>
-    <ClientDashboardContent clientName={slugToClientName(slug)} />
+    <ClientDashboardContent slug={slug} />
   </CampaignProvider>
 );
 

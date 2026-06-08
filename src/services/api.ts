@@ -3,7 +3,10 @@ import { ApiResponse, ProcessedCampaignData, PIInfo } from '../types/campaign';
 import { parse, startOfDay } from 'date-fns';
 
 const CAMPAIGN_API_URLS = [
-  'https://nmbcoamazonia-api.vercel.app/google/sheets/1bOT3vNItNiBPZzUVhVPaxdn3ICvk49TpNAuawsjL43M/data?range=Consolidado'
+  // Secom
+  'https://nmbcoamazonia-api.vercel.app/google/sheets/1bOT3vNItNiBPZzUVhVPaxdn3ICvk49TpNAuawsjL43M/data?range=Consolidado',
+  // Caixa Econômica Federal
+  'https://nmbcoamazonia-api.vercel.app/google/sheets/1n4JEBN6pnWNGpBVTL__SDuhoXITZVIJoOuyYZgedkog/data?range=Consolidado'
 ];
 
 const parseNumber = (value: string): number => {
